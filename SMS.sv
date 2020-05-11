@@ -179,7 +179,6 @@ parameter CONF_STR = {
 	"OB,BIOS,Enable,Disable;",
 	"OF,Disable mapper,No,Yes;",
 	"OG,Serial,OFF,SNAC;",
-	"OH,Phaser,OFF,ON;",
 	"-;",
 	"R0,Reset;",
 	"J1,Fire 1,Fire 2,Pause;",
@@ -426,7 +425,6 @@ system #(MAX_SPPL) system
 	.j1_tl(joya[4]),
 	.j1_tr(joya[5]),
 	.j1_th(joya_th),
-	.j1_thin(joya_thin),
 	.j2_up(joyb[3]),
 	.j2_down(joyb[2]),
 	.j2_left(joyb[1]),
@@ -434,9 +432,7 @@ system #(MAX_SPPL) system
 	.j2_tl(joyb[4]),
 	.j2_tr(joyb[5]),
 	.j2_th(joyb_th),
-	.j2_thin(joyb_thin),
 	.pause(joya[6]&joyb[6]),
-	.phaser(phaser),
 
 	.x(x),
 	.y(y),
@@ -471,7 +467,6 @@ assign joy[0] = status[1] ? joy_1 : joy_0;
 assign joy[1] = status[1] ? joy_0 : joy_1;
 
 wire raw_serial = status[16];
-wire phaser = status[17];
 wire swap = status[1];
 
 wire [6:0] joya;	
@@ -480,8 +475,6 @@ wire [6:0] joyser;
 
 wire      joya_th;
 wire      joyb_th;
-wire      joya_thin;
-wire      joyb_thin;
 wire      joyser_th;
 reg [1:0] jcnt = 0;
 
@@ -506,14 +499,14 @@ always @(posedge clk_sys) begin
 			end
 		joya <= swap ? ~joy[1] : joyser;
 		joyb <= swap ? joyser : ~joy[0];	
-		joya_thin <=  swap ? 1'b1 : joyser_th;
-		joyb_thin <=  swap ? joyser_th : 1'b1;
+		joya_th <=  swap ? 1'b1 : joyser_th;
+		joyb_th <=  swap ? joyser_th : 1'b1;
 		
 	end else begin
 		joya = ~joy[jcnt];
 		joyb = status[14] ? 7'h7F : ~joy[1];
-		joya_thin <=  1'b1;
-		joyb_thin <=  1'b1;
+		joya_th <=  1'b1;
+		joyb_th <=  1'b1;
 				
 
 		if(ce_cpu) begin

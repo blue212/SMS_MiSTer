@@ -9,8 +9,7 @@ entity io is
 		A:			in	 STD_LOGIC_VECTOR (7 downto 0);
 		D_in:		in	 STD_LOGIC_VECTOR (7 downto 0);
 		D_out:	out STD_LOGIC_VECTOR (7 downto 0);
-		TH_A:	   out STD_LOGIC;
-		TH_B:	   out STD_LOGIC;
+		HL_out:   out STD_LOGIC;
 		TH_Ain:	   in STD_LOGIC;
 		TH_Bin:	   in STD_LOGIC;
 		J1_up:	in  STD_LOGIC;
@@ -39,6 +38,8 @@ architecture rtl of io is
 	signal gg_txd:	std_logic_vector(7 downto 0) := (others=>'0');
 	signal gg_rxd:	std_logic_vector(7 downto 0) := (others=>'1');
 	signal gg_pdr:	std_logic_vector(7 downto 0) := (others=>'0');
+	signal th_a_dir: std_logic := '0';
+	signal th_b_dir: std_logic := '0';
 	-- signal gg_sctrl:	std_logic_vector(7 downto 3) := "00111";
 
 begin
@@ -72,9 +73,6 @@ begin
 			end if;
 		end if;
 	end process;
-
-	TH_A <= ctrl(5) or ctrl(1);
-	TH_B <= ctrl(7) or ctrl(3);
 
 --	J1_tr <= ctrl(4) when ctrl(0)='0' else 'Z';
 --	J2_tr <= ctrl(6) when ctrl(2)='0' else 'Z';
@@ -142,6 +140,29 @@ begin
 					D_out(2) <= J2_tl;
 					D_out(1) <= J2_right;
 					D_out(0) <= J2_left;
+				end if;
+			end if;
+
+			HL_out <= '0';
+			th_a_dir <= ctrl(1);
+			th_b_dir <= ctrl(3);
+			if th_a_dir = '0' then
+				if ctrl(1) = '1' then
+					HL_out <= '1';
+				end if;
+			else
+				if TH_Ain = '0' then
+					HL_out <= '1';
+				end if;
+			end if;
+
+			if th_b_dir = '0' then
+				if ctrl(3) = '1' then
+					HL_out <= '1';
+				end if;
+			else
+				if TH_Bin = '0' then
+					HL_out <= '1';
 				end if;
 			end if;
 		end if;

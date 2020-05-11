@@ -35,18 +35,15 @@ entity system is
 		j1_right:	in	 STD_LOGIC;
 		j1_tl:		in	 STD_LOGIC;
 		j1_tr:		in	 STD_LOGIC;
-		j1_th:      out STD_LOGIC;
-		j1_thin:		in	 STD_LOGIC;
+		j1_th:		in  STD_LOGIC;
 		j2_up:		in	 STD_LOGIC;
 		j2_down:		in	 STD_LOGIC;
 		j2_left:		in	 STD_LOGIC;
 		j2_right:	in	 STD_LOGIC;
 		j2_tl:		in	 STD_LOGIC;
 		j2_tr:		in	 STD_LOGIC;
-		j2_th:      out STD_LOGIC;
-		j2_thin:		in	 STD_LOGIC;
+		j2_th:		in  STD_LOGIC;
 		pause:		in	 STD_LOGIC;
-		phaser:		in	 STD_LOGIC;
 
 		x:				in	 STD_LOGIC_VECTOR(8 downto 0);
 		y:				in	 STD_LOGIC_VECTOR(8 downto 0);
@@ -129,10 +126,9 @@ architecture Behavioral of system is
 	signal det_D:		   	std_logic_vector(2 downto 0);
 	signal det_WR_n:	   	std_logic;
 
-	signal TH_A:			std_logic;
-	signal TH_B:			std_logic;
-	signal TH_Ain:			std_logic;
-	signal TH_Bin:			std_logic;
+	signal HL:					std_logic;
+	signal TH_Ain:				std_logic;
+	signal TH_Bin:				std_logic;
 
 	signal nvram_WR:		   std_logic;
 	signal nvram_e:         std_logic := '0';
@@ -226,11 +222,7 @@ begin
 		ce_pix	=> ce_pix,
 		ce_sp		=> ce_sp,
 		sp64		=> sp64,
-		TH_A		=> TH_A,
-		TH_B		=> TH_B,
-		TH_Ain	=> TH_Ain,
-		TH_Bin	=> TH_Bin,
-		phaser	=> phaser,
+		HL			=> HL,
 		gg			=> gg,
 		-- Bsg			=> sg,		-- sg1000
 		RD_n		=> vdp_RD_n,
@@ -291,8 +283,7 @@ begin
 		A			=> A(7 downto 0),
 		D_in		=> D_in,
 		D_out		=> io_D_out,
-		TH_A		=> TH_A,
-		TH_B		=> TH_B,
+		HL_out		=> HL,
 		TH_Ain		=> TH_Ain,
 		TH_Bin		=> TH_Bin,
 		J1_up		=> j1_up,
@@ -313,11 +304,9 @@ begin
 		region	=> region,
 		RESET_n	=> RESET_n
 	);
-	
-	j1_th <= TH_A;
-	j2_th <= TH_B;
-	TH_Ain <= j1_thin;
-	TH_Bin <= j2_thin;
+
+	TH_Ain <= j1_th;
+	TH_Bin <= j2_th;
 
 	ram_a <= A(12 downto 0);
 	ram_we <= ram_WR;
