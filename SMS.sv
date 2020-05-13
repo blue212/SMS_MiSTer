@@ -134,7 +134,6 @@ localparam SP64     = 1'b0;
 `endif
 
 assign ADC_BUS  = 'Z;
-assign USER_OUT = '1;
 assign VGA_F1 = 0;
 
 assign {UART_RTS, UART_TXD, UART_DTR} = 0;
@@ -425,6 +424,7 @@ system #(MAX_SPPL) system
 	.j1_tl(joya[4]),
 	.j1_tr(joya[5]),
 	.j1_th(joya_th),
+
 	.j2_up(joyb[3]),
 	.j2_down(joyb[2]),
 	.j2_left(joyb[1]),
@@ -433,6 +433,11 @@ system #(MAX_SPPL) system
 	.j2_tr(joyb[5]),
 	.j2_th(joyb_th),
 	.pause(joya[6]&joyb[6]),
+
+	.j1_tr_out(joya_tr_out),
+	.j1_th_out(joya_th_out),
+	.j2_tr_out(joyb_tr_out),
+	.j2_th_out(joyb_th_out),
 
 	.x(x),
 	.y(y),
@@ -473,6 +478,10 @@ wire [6:0] joya;
 wire [6:0] joyb;
 wire [6:0] joyser;
 
+wire      joya_tr_out;
+wire      joya_th_out;
+wire      joyb_tr_out;
+wire      joyb_th_out;
 wire      joya_th;
 wire      joyb_th;
 wire      joyser_th;
@@ -485,7 +494,7 @@ always @(posedge clk_sys) begin
 	reg [15:0] tmr;
 
 	if (raw_serial) begin
-		joyser[3] = USER_IN[1];//up
+		joyser[3] <= USER_IN[1];//up
 		joyser[2] <= USER_IN[0];//down	
 		joyser[1] <= USER_IN[5];//left
 		joyser[0] <= USER_IN[3];//right	
@@ -502,6 +511,13 @@ always @(posedge clk_sys) begin
 		joya_th <=  swap ? 1'b1 : joyser_th;
 		joyb_th <=  swap ? joyser_th : 1'b1;
 		
+		USER_OUT[1] <= 1'b1;
+		USER_OUT[0] <= 1'b1;
+		USER_OUT[5] <= 1'b1;
+		USER_OUT[3] <= 1'b1;
+		USER_OUT[2] <= 1'b1;
+		USER_OUT[6] <= swap ? joyb_tr_out : joya_tr_out;
+		USER_OUT[4] <= swap ? joyb_th_out : joya_th_out;
 	end else begin
 		joya = ~joy[jcnt];
 		joyb = status[14] ? 7'h7F : ~joy[1];

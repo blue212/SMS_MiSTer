@@ -45,6 +45,11 @@ entity system is
 		j2_th:		in  STD_LOGIC;
 		pause:		in	 STD_LOGIC;
 
+		j1_tr_out:	out STD_LOGIC;
+		j1_th_out:	out STD_LOGIC;
+		j2_tr_out:	out STD_LOGIC;
+		j2_th_out:	out STD_LOGIC;
+
 		x:				in	 STD_LOGIC_VECTOR(8 downto 0);
 		y:				in	 STD_LOGIC_VECTOR(8 downto 0);
 		color:		out STD_LOGIC_VECTOR(11 downto 0);
@@ -283,30 +288,31 @@ begin
 		A			=> A(7 downto 0),
 		D_in		=> D_in,
 		D_out		=> io_D_out,
-		HL_out		=> HL,
-		TH_Ain		=> TH_Ain,
-		TH_Bin		=> TH_Bin,
+		HL_out	=> HL,
+		J1_tr_out => j1_tr_out,
+		J1_th_out => j1_th_out,
+		J2_tr_out => j2_tr_out,
+		J2_th_out => j2_th_out,
 		J1_up		=> j1_up,
 		J1_down	=> j1_down,
 		J1_left	=> j1_left,
 		J1_right	=> j1_right,
 		J1_tl		=> j1_tl,
 		J1_tr		=> j1_tr,
+		J1_th		=> j1_th,
 		J2_up		=> j2_up,
 		J2_down	=> j2_down,
 		J2_left	=> j2_left,
 		J2_right	=> j2_right,
 		J2_tl		=> j2_tl,
 		J2_tr		=> j2_tr,
+		J2_th		=> j2_th,
 		Pause		=> pause,
 		pal		=> pal,
 		gg			=> gg,
 		region	=> region,
 		RESET_n	=> RESET_n
 	);
-
-	TH_Ain <= j1_th;
-	TH_Bin <= j2_th;
 
 	ram_a <= A(12 downto 0);
 	ram_we <= ram_WR;
