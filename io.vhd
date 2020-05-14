@@ -147,42 +147,15 @@ begin
 				end if;
 			end if;
 
-			HL_out <= '0';
+			J1_tr_out <= ctrl(0) or ctrl(4) or region;
+			J1_th_out <= ctrl(1) or ctrl(5) or region;
+			J2_tr_out <= ctrl(2) or ctrl(6) or region;
+			J2_th_out <= ctrl(3) or ctrl(7) or region;
+			HL_out <= (not j1_th_dir and ctrl(1)) or (ctrl(1) and not J1_th) or
+				(not j2_th_dir and ctrl(3)) or (ctrl(3) and not J2_th);
 			j1_th_dir <= ctrl(1);
 			j2_th_dir <= ctrl(3);
-			J1_tr_out <= '1';
-			J1_th_out <= '1';
-			J2_tr_out <= '1';
-			J2_th_out <= '1';
-			if j1_th_dir = '0' then
-				if region='0' then
-					J1_tr_out <= ctrl(4);
-					J1_th_out <= ctrl(5);
-				end if;
 
-				if ctrl(1) = '1' then
-					HL_out <= '1';
-				end if;
-			else
-				if J1_th = '0' then
-					HL_out <= '1';
-				end if;
-			end if;
-
-			if j2_th_dir = '0' then
-				if region='0' then
-					J2_tr_out <= ctrl(6);
-					J2_th_out <= ctrl(7);
-				end if;
-
-				if ctrl(3) = '1' then
-					HL_out <= '1';
-				end if;
-			else
-				if J2_th = '0' then
-					HL_out <= '1';
-				end if;
-			end if;
 		end if;
 	end process;
 	
