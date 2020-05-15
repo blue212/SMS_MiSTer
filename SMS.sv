@@ -178,6 +178,7 @@ parameter CONF_STR = {
 	"OB,BIOS,Enable,Disable;",
 	"OF,Disable mapper,No,Yes;",
 	"OG,Serial,OFF,SNAC;",
+	"H2OH,Pause Btn Combo,No,Yes;",
 	"-;",
 	"R0,Reset;",
 	"J1,Fire 1,Fire 2,Pause;",
@@ -241,7 +242,7 @@ hps_io #(.STRLEN($size(CONF_STR)>>3), .WIDE(0)) hps_io
 
 	.buttons(buttons),
 	.status(status),
-	.status_menumask({~gg_avail,~bk_ena}),
+	.status_menumask({~raw_serial,~gg_avail,~bk_ena}),
 	.forced_scandoubler(forced_scandoubler),
 	.new_vmode(pal),
 
@@ -472,6 +473,7 @@ assign joy[0] = status[1] ? joy_1 : joy_0;
 assign joy[1] = status[1] ? joy_0 : joy_1;
 
 wire raw_serial = status[16];
+wire pause_combo = status[17];
 wire swap = status[1];
 
 wire [6:0] joya;	
@@ -501,11 +503,11 @@ always @(posedge clk_sys) begin
 		joyser[4] <= USER_IN[2];//trigger / button1
 		joyser[5] <= USER_IN[6];//button2
 		joyser_th <= USER_IN[4];//sensor
-			if (!USER_IN[0] & !USER_IN[2] & !USER_IN[6]) begin //D 1 2 combo
+		if (!USER_IN[0] & !USER_IN[2] & !USER_IN[6] & pause_combo) begin //D 1 2 combo
 			joyser[6] <= 0;
-			end else begin
+		end else begin
 			joyser[6] <= 1'b1;
-			end
+		end
 		joya <= swap ? ~joy[1] : joyser;
 		joyb <= swap ? joyser : ~joy[0];	
 		joya_th <=  swap ? 1'b1 : joyser_th;
