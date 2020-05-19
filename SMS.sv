@@ -489,8 +489,6 @@ wire      joyb_th;
 wire      joyser_th;
 reg [1:0] jcnt = 0;
 
-
-
 always @(posedge clk_sys) begin
 	reg old_th;
 	reg [15:0] tmr;
@@ -512,17 +510,12 @@ always @(posedge clk_sys) begin
 		joyb <= swap ? joyser : ~joy[0];	
 		joya_th <=  swap ? 1'b1 : joyser_th;
 		joyb_th <=  swap ? joyser_th : 1'b1;
-		
-		USER_OUT[1] <= 1'b1;
-		USER_OUT[0] <= 1'b1;
-		USER_OUT[5] <= 1'b1;
-		USER_OUT[3] <= 1'b1;
-		USER_OUT[2] <= 1'b1;
-		USER_OUT[6] <= swap ? joyb_tr_out : joya_tr_out;
-		USER_OUT[4] <= swap ? joyb_th_out : joya_th_out;
+
+		USER_OUT <= {swap ? joyb_tr_out : joya_tr_out, 1'b1, swap ? joyb_th_out : joya_th_out, 4'b1111, };
+
 	end else begin
-		joya = ~joy[jcnt];
-		joyb = status[14] ? 7'h7F : ~joy[1];
+		joya <= ~joy[jcnt];
+		joyb <= status[14] ? 7'h7F : ~joy[1];
 		joya_th <=  1'b1;
 		joyb_th <=  1'b1;
 				
@@ -539,8 +532,9 @@ always @(posedge clk_sys) begin
 			end
 		end
 
-		if(reset | ~status[14]) jcnt <= 0;		
+		if(reset | ~status[14]) jcnt <= 0;
 	
+		USER_OUT <= 7'b1111111;
 	end
 
 end	
