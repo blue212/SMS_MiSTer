@@ -529,11 +529,13 @@ always @(posedge clk_sys) begin
 		joyser[4] <= USER_IN[2];//trigger / button1
 		joyser[5] <= USER_IN[6];//button2
 		joyser_th <= USER_IN[4];//sensor
+		
+		if (tmr) tmr <= tmr - 1'd1;
 		if (!USER_IN[0] & !USER_IN[2] & !USER_IN[6] & pause_combo) begin //D 1 2 combo
-			joyser[6] <= 0;
-		end else begin
-			joyser[6] <= 1'b1;
+			tmr <= 57000;
 		end
+		joyser[6] <= !tmr;
+		
 		joya <= swap ? ~joy[1] : joyser;
 		joyb <= swap ? joyser : ~joy[0];	
 		joya_th <=  swap ? 1'b1 : joyser_th;
